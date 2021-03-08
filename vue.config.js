@@ -8,6 +8,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+
 // 
 const name = defaultSettings.title || 'vue Admin Template' // page title
 
@@ -43,7 +44,7 @@ module.exports = {
       // 配置代理 希望拦截当前的host地址 替换为目标地址
       // key: {}   ;  key为拦截的规则,可以是正则表达式
       '/(api|admin|lejuAdmin)': {
-        target: " http://leju.bufan.cloud", 
+        target: defaultSettings.host, 
         // 8080可以省略不写 所以代理地址和当前项目不是同一个地址!!
         changeOrigin: true, 
         // 如果是跨域 需要添加

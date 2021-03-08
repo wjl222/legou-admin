@@ -23,7 +23,7 @@
               <el-input
                 size="small"
                 class="info-input"
-                v-model="searchForm.articleTitle"
+                v-model="searchForm.title"
                 placeholder="标题"
               ></el-input>
             </div>
@@ -37,10 +37,10 @@
                 size="small"
               >
                 <el-option
-                  v-for="item in editTypeList"
+                  v-for="(item,index) in editTypeList"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"
+                  :value="index"
                 >
                 </el-option>
               </el-select>
@@ -49,7 +49,7 @@
           <el-col :span="6" :offset="18">
             <div class="grid-content">
               <el-button size="mini">重置</el-button>
-              <el-button type="primary" size="mini" @click="onSubmit"
+              <el-button type="primary" size="mini" @click="onSubmitSearch"
                 >搜索</el-button
               >
             </div>
@@ -60,7 +60,9 @@
 
     <el-card class="form-list_card">
       <div slot="header" class="clearfix">
-        <el-button type="primary"> 新增 </el-button>
+        <router-link to="/article/addArticle">
+          <el-button type="primary"> 新增 </el-button>
+        </router-link>
       </div>
 
       <el-table
@@ -69,41 +71,64 @@
         border
         style="width: 100%"
       >
-        <el-table-column align='center' type="index" fixed label="#" width="50">
+        <el-table-column align="center" type="index" fixed label="#" width="50">
         </el-table-column>
-        <el-table-column align='center' prop="title" label="文章标题" width="250">
+        <el-table-column
+          align="center"
+          prop="title"
+          label="文章标题"
+          width="250"
+        >
         </el-table-column>
-        <el-table-column align='center' class="table-col" label="展示图片" width="200">
+        <el-table-column
+          align="center"
+          class="table-col"
+          label="展示图片"
+          width="200"
+        >
           <template slot-scope="scope">
             <img class="article-image" :src="scope.row.coverImg" />
           </template>
         </el-table-column>
-        <el-table-column align='center' prop="createTime" label="添加时间" width="300">
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="添加时间"
+          width="300"
+        >
         </el-table-column>
-        <el-table-column align='center' prop="author" label="文章作者" width="200">
+        <el-table-column
+          align="center"
+          prop="author"
+          label="文章作者"
+          width="200"
+        >
         </el-table-column>
-        <el-table-column align='center' label="文章是否显示" width="200">
+        <el-table-column align="center" label="文章是否显示" width="200">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.isShow"
-              active-color="#13ce66"
-            >
+            <el-switch v-model="scope.row.isShow" active-color="#13ce66">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column align='center' label="内容" width="200">
+        <el-table-column align="center" label="内容" width="200">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.editorType !== null">
-              {{scope.row.editorType === 0 ? '富文本' :  'MarkDown'}}
+              {{ scope.row.editorType === 0 ? "富文本" : "MarkDown" }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align='center' fixed="right" label="操作" width="150">
+        <el-table-column align="center" fixed="right" label="操作" width="150">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small"
+            <el-button @click="handleEdit(scope.row)" type="text" size="small"
               >编辑文章</el-button
             >
-            <el-button class="delete-btn" type="text" size="small">删除</el-button>
+            <el-button
+              @click="deleteArticle(scope.row)"
+              class="delete-btn"
+              type="text"
+              size="small"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -122,14 +147,14 @@
 </template>
 
 <script>
-import { requestArticleInfo } from "@/api/article";
+import { requestArticleInfo, deleteArticleR } from "@/api/article";
 export default {
   data() {
     return {
       searchForm: {
         author: "",
         editType: "",
-        articleTitle: "",
+        title: "",
       },
       editTypeList: [
         {
@@ -145,21 +170,37 @@ export default {
       articleTotal: 0,
       params: {
         pagenum: 1,
-        limit: 3
-      }
+        limit: 3,
+      },
     };
   },
   methods: {
-    onSubmit() {
-      console.log(this.$refs);
+    onReset() {
+      this.searchForm = {
+        author: '',
+        editType: '',
+        title: ''
+      };
+      this.initInfo()
     },
-    handleClick(row) {
-      console.log(row);
-      this.$router.push(`/article/editArticle/${row.id}`)
+    onSubmitSearch() {
+       this.initInfo()
     },
+    handleEdit(row) {
+      this.$router.push(`/article/editArticle/${row.id}`);
+    },
+    
     async initInfo() {
+      const data = {};
+      for (const item in this.searchForm) {
+        if(this.searchForm[item] !== '') {
+          data[item] = this.searchForm[item]
+        }
+      }
       const res = await requestArticleInfo({
-        url: `/lejuAdmin/productArticle/findArticles/${this.params.pagenum}/${this.params.limit}`,
+        limit: this.params.limit,
+        pagenum: this.params.pagenum,
+        data
       });
       this.articleList = res.data.data.rows;
       this.articleTotal = res.data.data.total;
@@ -169,14 +210,38 @@ export default {
     },
     handleCurrentChange(e) {
       this.params.pagenum = e;
-      this.initInfo()
+      this.initInfo();
     },
     handleSizeChange(e) {
       this.params.limit = e;
-      this.initInfo()
+      this.initInfo();
     },
     handleEdit(a, b) {
       console.log(a, b);
+    },
+    // 删除文章
+    async deleteArticle(item) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          const res = await deleteArticleR({
+            id: item.id,
+          });
+          this.initInfo()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+      
     },
   },
   created() {

@@ -96,7 +96,7 @@
         ></Tinymce>
         <Editor :value='article.content1' ref="editorItem" v-else-if="article.editorType == 1" />
         <el-button class="sub" type="primary" @click="sub">
-          立即修改
+          新增
         </el-button>
       </el-form>
     </el-card>
@@ -109,7 +109,7 @@ import "tui-editor/dist/tui-editor-contents.css"; // editor's content
 import "codemirror/lib/codemirror.css"; // codemirror
 import "highlight.js/styles/github.css"; // code block highlight
 
-import { requestArticleDetail,uploadArticleDetail } from "@/api/article";
+import { addArticleR } from "@/api/article";
 import { getToken } from "@/utils/auth";
 import Tinymce from "@/components/Tinymce";
 import Editor from "@/components/MarkdownEditor";
@@ -150,15 +150,6 @@ export default {
       this.uploadImgHeaders = {
         token: getToken(),
       };
-      this.article.id = this.$route.params.id;
-      const res = await requestArticleDetail({ id: this.article.id });
-      this.article = Object.assign(this.article, res.data.data.productArticle);
-
-      if (this.article.isShow == 0 || this.article.isShow == null) {
-        this.isShowB = false;
-      } else {
-        this.isShowB = true;
-      }
     },
     radioChange() {
       this.article.content1 = this.article.content2 = '';
@@ -213,13 +204,13 @@ export default {
 
       this.$refs.articleForm.validate((valid) => {
         if (valid) {
-          this.article.modifyTime = this.getDate();
-          uploadArticleDetail({
+          this.article.createTime = this.getDate();
+          addArticleR({
              data: this.article
            });
            this.$message({
              type: 'success',
-             message: '更新成功！'
+             message: '新增成功！'
            })
            this.$router.push('/article')
         } else {
