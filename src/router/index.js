@@ -30,8 +30,7 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -47,76 +46,159 @@ export const constantRoutes = [
     redirect: '/article'
   },
 
-{
+  {
     path: '/article',
     // redirect: 'noRedirect',
     component: Layout,
     redirect: '/article/articleList',
     name: 'article',
-    meta: { title: '内容管理', icon: 'el-icon-folder' },
-    children: [
-      {
+    meta: {
+      title: '内容管理',
+      icon: 'el-icon-folder'
+    },
+    children: [{
         path: 'articleList',
         name: 'MrticleList',
         // 懒加载
         component: () => import('@/views/article/articleList/index'),
         // 路由元信息
-        meta: { title: '文章列表', icon: 'el-icon-tickets' }
+        meta: {
+          title: '文章列表',
+          icon: 'el-icon-tickets'
+        }
       },
       {
         path: 'materialList',
         name: 'MaterialList',
         component: () => import('@/views/article/materialList/index'),
-        meta: { title: '素材列表', icon: 'el-icon-picture-outline' }
+        meta: {
+          title: '素材列表',
+          icon: 'el-icon-picture-outline'
+        }
       },
       {
         path: 'editArticle/:id',
         name: 'EditArticle',
         component: () => import('@/views/article/editArticle/index'),
-        meta: { title: '编辑文章'},
+        meta: {
+          title: '编辑文章'
+        },
         hidden: true
       },
       {
         path: 'addArticle',
         name: 'AddArticle',
         component: () => import('@/views/article/addArticle/index'),
-        meta: { title: '新增文章'},
+        meta: {
+          title: '新增文章'
+        },
         hidden: true
       },
 
     ]
   },
-{
+  {
     path: '/marketManage',
     // redirect: 'noRedirect',
     component: Layout,
     redirect: '/marketManage/limitAct',
     name: 'marketManage',
-    meta: { title: '营销管理', icon: 'el-icon-folder' },
-    children: [
-      {
+    meta: {
+      title: '营销管理',
+      icon: 'el-icon-folder'
+    },
+    children: [{
         path: 'limitAct',
         name: 'LimitAct',
         // 懒加载
         component: () => import('@/views/marketManage/limitAct/index'),
         // 路由元信息
-        meta: { title: '限时活动', icon: 'el-icon-tickets' }
+        meta: {
+          title: '限时活动',
+          icon: 'el-icon-tickets'
+        }
       },
       {
         path: 'advList',
         name: 'AdvList',
         component: () => import('@/views/marketManage/advList/index'),
-        meta: { title: '广告列表', icon: 'el-icon-picture-outline' }
+        meta: {
+          title: '广告列表',
+          icon: 'el-icon-picture-outline'
+        }
       }
     ]
   },
+  {
+    path: '/orderManage',
+    // redirect: 'noRedirect',
+    component: Layout,
+    redirect: '/orderManage/orderList',
+    name: 'OrderManage',
+    meta: {
+      title: '订单管理',
+      icon: 'el-icon-folder'
+    },
+    children: [{
+        path: 'orderList',
+        name: 'OrderList',
+        // 懒加载
+        component: () => import('@/views/orderManage/orderList/orderList'),
+        // 路由元信息
+        meta: {
+          title: '订单列表',
+          icon: 'el-icon-tickets'
+        }
+      },
+      {
+        path: 'orderDetail/:id',
+        name: 'OrderDetail',
+        component: () => import('@/views/orderManage/orderList/orderDetail'),
+        meta: {
+          title: '地址详情'
+        },
+        hidden: true
+      },
+      {
+        path: 'returnList',
+        name: 'ReturnList',
+        component: () => import('@/views/orderManage/returnList/returnList'),
+        meta: {
+          title: '退单列表'
+        }
+      },
+      {
+        path: 'returnDetail/:id',
+        name: 'ReturnDetail',
+        component: () => import('@/views/orderManage/returnList/returnDetail'),
+        meta: {
+          title: '退单详情'
+        },
+        hidden: true
+      },
+      {
+        path: 'addressList',
+        name: 'AddressList',
+        component: () => import('@/views/orderManage/addressList/index'),
+        meta: {
+          title: '地址列表'
+        },
+      },
+    ]
+  },
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 

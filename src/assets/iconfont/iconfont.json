@@ -1,0 +1,30 @@
+{
+  "id": "2407434",
+  "name": "乐居后台",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "16384729",
+      "name": "眼睛",
+      "font_class": "yanjing",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "813705",
+      "name": "微信",
+      "font_class": "weixin",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "7302534",
+      "name": "支付宝 账户",
+      "font_class": "zhifubaozhanghu",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    }
+  ]
+}
